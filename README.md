@@ -172,8 +172,8 @@ jupyter notebook notebook.ipynb
 | `runtimeMinutes` | 100% | משך |
 | `averageRating` | 74.1% | חסר בסרטים ישנים ללא מדרגים |
 | `numVotes` | 74.1% | זהה ל-averageRating |
-| `Language` | ~12% | רוב הסרטים אינם מופיעים ב-Wikipedia |
-| `Country` | ~12% | זהה לסיבת Language |
-| `budget` | ~2.4% | מצוין רק בסרטים מסחריים בולטים |
-| `BoxOffice` | ~2.9% | מצוין רק בסרטים מסחריים בולטים |
-| `plot` | ~9% | נחלץ מקטע Plot/Synopsis או פסקת פתיחה |
+| `Language` | 28.0% | רוב הסרטים אינם מופיעים ב-Wikipedia |
+| `Country` | 28.1% | זהה לסיבת Language |
+| `budget` | 5.0% | מצוין רק בסרטים מסחריים בולטים |
+| `BoxOffice` | 6.0% | מצוין רק בסרטים מסחריים בולטים |
+| `plot` | 28.6% | נחלץ מקטע Plot/Synopsis או פסקת פתיחה |

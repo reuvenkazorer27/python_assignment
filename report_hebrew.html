@@ -7,6 +7,56 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ===== הדפסה / ייצוא PDF ===== */
+    @media print {
+      body { background: #fff !important; color: #000 !important; font-size: 11pt; }
+      header {
+        background: #1a1a2e !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        padding: 24px 30px 18px;
+      }
+      header h1 { font-size: 1.5rem; }
+      header p, header .badge { font-size: 0.85rem; }
+      .container { max-width: 100%; margin: 16px auto; padding: 0 16px; }
+      section {
+        box-shadow: none !important;
+        border: 1px solid #ccc;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        page-break-inside: avoid;
+      }
+      h2 { font-size: 1.1rem; }
+      h3 { font-size: 0.97rem; }
+      th {
+        background: #1a1a2e !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      tr:nth-child(even) td { background: #f4f4f4 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .stat-card {
+        background: #f0f4ff !important;
+        border-top: 3px solid #1a1a2e !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .missing-bar-fill {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .decision-box {
+        background: #fff5f5 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .source-tag {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      a { color: inherit; text-decoration: none; }
+      footer { display: none; }
+    }
+
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       background: #f4f6f9;
@@ -209,15 +259,7 @@
 <header>
   <h1>דוח מטלה 1 – איסוף נתוני סרטים</h1>
   <p>קורס כריה וניתוח נתונים מתקדם &nbsp;|&nbsp; חלק 1 מתוך 3</p>
-  <p style="margin-top:10px; font-size:0.97rem;">
-    ראובן קזורר &nbsp;328605290 &nbsp;&nbsp;|&nbsp;&nbsp; אלון רוזנפלד &nbsp;322718560
-  </p>
   <div class="badge">מקורות: IMDb Non-Commercial Datasets &amp; Wikipedia scraping</div>
-  <div class="badge" style="margin-top:6px;">
-    <a href="https://github.com/reuvenkazorer27/python_assignment" style="color:#fff;" target="_blank">
-      github.com/reuvenkazorer27/python_assignment
-    </a>
-  </div>
 </header>
 
 <div class="container">
@@ -636,11 +678,11 @@
         <tr>
           <td><code>Language</code></td>
           <td><span class="source-tag src-wiki">Wikipedia</span></td>
-          <td>5,874</td>
-          <td>88.1%</td>
+          <td>4,801</td>
+          <td>72.0%</td>
           <td>
             <div class="missing-bar-wrap">
-              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:88.1%"></div></div>
+              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:72%"></div></div>
               <div class="missing-pct">רוב הסרטים ישנים/עצמאיים ואין להם דף Wikipedia</div>
             </div>
           </td>
@@ -648,11 +690,11 @@
         <tr>
           <td><code>Country</code></td>
           <td><span class="source-tag src-wiki">Wikipedia</span></td>
-          <td>5,874</td>
-          <td>88.1%</td>
+          <td>4,794</td>
+          <td>71.9%</td>
           <td>
             <div class="missing-bar-wrap">
-              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:88.1%"></div></div>
+              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:71.9%"></div></div>
               <div class="missing-pct">זהה לסיבת Language</div>
             </div>
           </td>
@@ -660,11 +702,11 @@
         <tr>
           <td><code>budget</code></td>
           <td><span class="source-tag src-wiki">Wikipedia</span></td>
-          <td>6,508</td>
-          <td>97.6%</td>
+          <td>6,335</td>
+          <td>95.0%</td>
           <td>
             <div class="missing-bar-wrap">
-              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:97.6%"></div></div>
+              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:95%"></div></div>
               <div class="missing-pct">תקציב מוצג רק בסרטים מסחריים בולטים</div>
             </div>
           </td>
@@ -672,11 +714,11 @@
         <tr>
           <td><code>BoxOffice</code></td>
           <td><span class="source-tag src-wiki">Wikipedia</span></td>
-          <td>6,475</td>
-          <td>97.1%</td>
+          <td>6,268</td>
+          <td>94.0%</td>
           <td>
             <div class="missing-bar-wrap">
-              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:97.1%"></div></div>
+              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:94%"></div></div>
               <div class="missing-pct">הכנסות מוצגות רק בסרטים מסחריים בולטים</div>
             </div>
           </td>
@@ -684,11 +726,11 @@
         <tr>
           <td><code>plot</code></td>
           <td><span class="source-tag src-wiki">Wikipedia</span></td>
-          <td>6,067</td>
-          <td>91.0%</td>
+          <td>4,761</td>
+          <td>71.4%</td>
           <td>
             <div class="missing-bar-wrap">
-              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:91%"></div></div>
+              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:71.4%"></div></div>
               <div class="missing-pct">נחלץ מקטע Plot/Synopsis או פסקת פתיחה בדף Wikipedia</div>
             </div>
           </td>
@@ -729,7 +771,7 @@
         <tr>
           <td>Cache שמר כישלונות לצמיתות — 93% מהרשומות היו קפואות כ-None מריצה גרועה</td>
           <td>מחיקת רשומות all-None בטעינה + אי-שמירת כישלונות חדשים</td>
-          <td>Language: 6% → <strong>11.9%</strong></td>
+          <td>Language: 6% → <strong>28.0%</strong></td>
         </tr>
         <tr>
           <td><code>parse_money</code> לא טיפל ב-en-dash (U+2013) — <code>$5.7–6.5M</code> החזיר ערך שגוי</td>
@@ -749,7 +791,7 @@
         <tr>
           <td>קטע Plot: HTML חדש של Wikipedia משתמש ב-<code>div.mw-heading</code> ולא ב-<code>&lt;span id="Plot"&gt;</code></td>
           <td>בדיקה ראשית של <code>div.mw-heading</code>, fallback לסגנון ישן</td>
-          <td>plot: 1.2% → <strong>9.0%</strong></td>
+          <td>plot: 1.2% → <strong>28.6%</strong></td>
         </tr>
         <tr>
           <td>Lead section: פסקאות נמצאות ב-<code>div.mw-parser-output</code> ולא ישירות ב-<code>div#mw-content-text</code></td>
