@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>דוח מטלה 1 – איסוף נתוני סרטים</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f4f6f9;
+      color: #222;
+      line-height: 1.7;
+      direction: rtl;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+      color: #fff;
+      padding: 48px 40px 36px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    header p {
+      font-size: 1.05rem;
+      opacity: 0.85;
+    }
+    header .badge {
+      display: inline-block;
+      margin-top: 14px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 4px 18px;
+      font-size: 0.9rem;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+    }
+
+    section {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      padding: 32px 36px;
+      margin-bottom: 32px;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: #0f3460;
+      border-bottom: 3px solid #e63946;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      color: #16213e;
+      margin: 22px 0 10px;
+    }
+
+    p { margin-bottom: 12px; }
+
+    ul, ol {
+      padding-right: 22px;
+      margin-bottom: 12px;
+    }
+    li { margin-bottom: 6px; }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.93rem;
+    }
+    th {
+      background: #0f3460;
+      color: #fff;
+      padding: 10px 14px;
+      text-align: right;
+      font-weight: 600;
+    }
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #e8eaed;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f8f9fc; }
+    tr:hover td { background: #eef2ff; }
+
+    /* Stat cards */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .stat-card {
+      background: #f0f4ff;
+      border-radius: 8px;
+      padding: 18px 16px;
+      text-align: center;
+      border-top: 4px solid #0f3460;
+    }
+    .stat-card .num {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #0f3460;
+      display: block;
+    }
+    .stat-card .lbl {
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 4px;
+    }
+
+    /* Missing value bar */
+    .missing-bar-wrap { margin: 4px 0; }
+    .missing-bar-bg {
+      background: #e8eaed;
+      border-radius: 6px;
+      height: 10px;
+      width: 100%;
+      overflow: hidden;
+    }
+    .missing-bar-fill {
+      height: 10px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #e63946, #f4a261);
+    }
+    .missing-bar-fill.low { background: linear-gradient(90deg, #2a9d8f, #57cc99); }
+    .missing-pct { font-size: 0.82rem; color: #666; margin-top: 2px; }
+
+    /* Code block */
+    code {
+      background: #f0f4ff;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', monospace;
+      font-size: 0.88em;
+      color: #c0392b;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .pipeline {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      margin: 18px 0;
+      direction: ltr;
+    }
+    .pipeline-step {
+      background: #0f3460;
+      color: #fff;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.88rem;
+      text-align: center;
+      min-width: 130px;
+      direction: rtl;
+    }
+    .pipeline-arrow {
+      font-size: 1.4rem;
+      color: #0f3460;
+      padding: 0 6px;
+    }
+
+    .source-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .src-imdb { background: #f5c518; color: #000; }
+    .src-wiki { background: #3e9e6b; color: #fff; }
+    .src-both { background: #0f3460; color: #fff; }
+
+    .decision-box {
+      border-right: 4px solid #e63946;
+      background: #fff5f5;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 12px;
+    }
+    .decision-box strong { color: #c0392b; }
+
+    footer {
+      text-align: center;
+      color: #888;
+      font-size: 0.85rem;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>דוח מטלה 1 – איסוף נתוני סרטים</h1>
+  <p>קורס כריה וניתוח נתונים מתקדם &nbsp;|&nbsp; חלק 1 מתוך 3</p>
+  <p style="margin-top:10px; font-size:0.97rem;">
+    ראובן קזורר &nbsp;328605290 &nbsp;&nbsp;|&nbsp;&nbsp; אלון רוזנפלד &nbsp;322718560
+  </p>
+  <div class="badge">מקורות: IMDb Non-Commercial Datasets &amp; Wikipedia scraping</div>
+  <div class="badge" style="margin-top:6px;">
+    <a href="https://github.com/reuvenkazorer27/python_assignment" style="color:#fff;" target="_blank">
+      github.com/reuvenkazorer27/python_assignment
+    </a>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ===== סקירה כללית ===== -->
+  <section>
+    <h2>סקירה כללית</h2>
+    <p>
+      מטלה זו בונה סט נתונים מקיף ואיכותי של סרטי קולנוע (ללא סדרות טלוויזיה),
+      אשר ישמש בסיס לבניית מודלי חיזוי ואפליקציית Flask בחלקים הבאים של הפרויקט.
+    </p>
+    <p>
+      הנתונים נאספו מהטבלאות הציבוריות של <strong>IMDb</strong> ומ-<strong>Wikipedia</strong>
+      (באמצעות web scraping בלבד — ללא API).
+    </p>
+    <p>
+      <strong>טווח כיסוי:</strong> סרטים שכותרתם מתחילה באותיות <strong>Bm עד Bz</strong>
+      (חלוקת עומס בין קבוצות הקורס).
+    </p>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <span class="num">6,668</span>
+        <span class="lbl">סרטים בסט הנתונים</span>
+      </div>
+      <div class="stat-card">
+        <span class="num">13</span>
+        <span class="lbl">עמודות (שדות)</span>
+      </div>
+      <div class="stat-card">
+        <span class="num">1905–2024</span>
+        <span class="lbl">טווח שנים</span>
+      </div>
+      <div class="stat-card">
+        <span class="num">60–300</span>
+        <span class="lbl">טווח משך (דקות)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== צינור הנתונים ===== -->
+  <section>
+    <h2>צינור עיבוד הנתונים (Pipeline)</h2>
+    <p>הנתונים עוברים את השלבים הבאים בסדר:</p>
+
+    <div class="pipeline">
+      <div class="pipeline-step">title.basics<br/><small>סינון &amp; טעינה</small></div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">JOIN<br/><small>title.ratings</small></div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">JOIN<br/><small>title.principals</small></div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">Wikipedia<br/><small>scraping</small></div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">dataset.csv<br/><small>פלט סופי</small></div>
+    </div>
+  </section>
+
+  <!-- ===== החלטות ===== -->
+  <section>
+    <h2>החלטות שנלקחו בבניית סט הנתונים</h2>
+
+    <div class="decision-box">
+      <strong>סינון לסוג "movie" בלבד</strong><br/>
+      הוצאו סדרות טלוויזיה, מיני-סדרות, פרקים וכו' — רק <code>titleType == 'movie'</code>
+      נכלל. הדבר מבטיח שהמודל מתאמן על ז'אנר אחיד.
+    </div>
+
+    <div class="decision-box">
+      <strong>הגבלת טווח שנים עד 2024</strong><br/>
+      סרטים משנת 2025 ואילך אינם כלולים. הגבלה זו מבטיחה שנתוני הדירוג מ-IMDb
+      מספיק מבוססים (מספיק ימי הצגה לאיסוף דירוגים).
+    </div>
+
+    <div class="decision-box">
+      <strong>סינון משך סרט 60–300 דקות</strong><br/>
+      סרטים קצרים מ-60 דקות הם לרוב סרטים קצרים (short films) שאינם מייצגים קולנוע
+      מסחרי. סרטים ארוכים מ-300 דקות הם אירועים חריגים שעלולים לעוות את המודל.
+    </div>
+
+    <div class="decision-box">
+      <strong>LEFT JOIN (לא INNER JOIN) עם דירוגים</strong><br/>
+      שימוש ב-LEFT JOIN שומר על כל הסרטים גם ללא דירוג. סרטים ישנים רבים אינם מדורגים
+      ב-IMDb אך עדיין בעלי ערך לניתוח.
+    </div>
+
+    <div class="decision-box">
+      <strong>לקיחת עד 5 שחקנים מובילים</strong><br/>
+      מטבלת title.principals, סינון ל-<code>category == 'actor'</code>
+      ומיון לפי <code>ordering</code>. נבחרו עד 5 שחקנים ראשונים (קרדיט) לכל סרט.
+      בחירה זו מאזנת בין כיסוי לפשטות.
+    </div>
+
+    <div class="decision-box">
+      <strong>cache לבקשות Wikipedia</strong><br/>
+      כל תוצאת Wikipedia נשמרת בקובץ <code>wiki_cache.json</code>. בהרצה חוזרת
+      הנתונים נטענים מה-cache ואין בקשות כפולות לשרת.
+    </div>
+
+    <div class="decision-box">
+      <strong>ממוצע עבור טווחי תקציב/הכנסות</strong><br/>
+      כאשר Wikipedia מציגה טווח (לדוגמה "20–25 מיליון דולר"), מחושב הממוצע ומוחזר
+      ערך יחיד כמספר עשרוני.
+    </div>
+  </section>
+
+  <!-- ===== פילטרים ===== -->
+  <section>
+    <h2>פילטרים מיושמים</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>עמודה</th>
+          <th>תנאי הסינון</th>
+          <th>ערך</th>
+          <th>סיבה</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>titleType</code></td>
+          <td>שווה ל</td>
+          <td><code>'movie'</code></td>
+          <td>הוצאת סדרות, מיני-סדרות, פרקים וכל מה שאינו סרט קולנוע</td>
+        </tr>
+        <tr>
+          <td><code>startYear</code></td>
+          <td>קטן-שווה</td>
+          <td><code>2024</code></td>
+          <td>הגבלת טווח שנים לפי דרישת המטלה; סרטי 2025+ אינם כלולים</td>
+        </tr>
+        <tr>
+          <td><code>runtimeMinutes</code></td>
+          <td>בין (כולל)</td>
+          <td><code>60 – 300</code></td>
+          <td>הסרת סרטים קצרים מדי (short films) וסרטים ארוכים חריגים</td>
+        </tr>
+        <tr>
+          <td><code>primaryTitle</code> (2 אותיות ראשונות)</td>
+          <td>בין (lowercase)</td>
+          <td><code>'bm' – 'bz'</code></td>
+          <td>חלוקת עומס בין קבוצות הקורס לפי אותיות ראשונות</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>קוד הסינון (לוגיקה)</h3>
+    <p>
+      לאחר טעינת <code>title.basics.tsv.gz</code>, הפילטרים מיושמים בסדר הבא:
+    </p>
+    <ol>
+      <li>שמירת שורות שבהן <code>titleType == 'movie'</code></li>
+      <li>המרת <code>startYear</code> לנומרי וסינון <code>&le; 2024</code></li>
+      <li>המרת <code>runtimeMinutes</code> לנומרי וסינון לטווח 60–300</li>
+      <li>חישוב 2 האותיות הראשונות (lowercase) של <code>primaryTitle</code> וסינון לטווח <code>bm–bz</code></li>
+    </ol>
+  </section>
+
+  <!-- ===== JOIN ===== -->
+  <section>
+    <h2>לוגיקת ה-Joins</h2>
+
+    <h3>JOIN 1 – דירוגי IMDb (title.ratings)</h3>
+    <table>
+      <thead>
+        <tr><th>פרמטר</th><th>ערך</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>סוג</td><td>LEFT JOIN</td></tr>
+        <tr><td>מפתח חיבור</td><td><code>tconst</code></td></tr>
+        <tr><td>טבלה שמאלית</td><td>טבלת הסרטים המסוננת (מ-title.basics)</td></tr>
+        <tr><td>טבלה ימנית</td><td><code>title.ratings.tsv.gz</code></td></tr>
+        <tr><td>עמודות שנוספו</td><td><code>averageRating</code>, <code>numVotes</code></td></tr>
+        <tr><td>סרטים ללא דירוג</td><td>נשמרים עם NaN בעמודות הדירוג (1,726 סרטים, 25.9%)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>JOIN 2 – שחקנים מובילים (title.principals + name.basics)</h3>
+    <table>
+      <thead>
+        <tr><th>פרמטר</th><th>ערך</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>סינון מוקדם</td><td><code>category == 'actor'</code> בלבד</td></tr>
+        <tr><td>מיון</td><td>לפי <code>tconst</code> ואחר-כך <code>ordering</code> (סדר קרדיט)</td></tr>
+        <tr><td>צבירה (GroupBy)</td><td><code>groupby('tconst').head(5)</code> → עד 5 שחקנים ראשונים</td></tr>
+        <tr><td>צבירת מזהים</td><td><code>groupby('tconst')['nconst'].apply(list)</code></td></tr>
+        <tr><td>סוג JOIN</td><td>LEFT JOIN על <code>tconst</code></td></tr>
+        <tr><td>עמודה שנוספה</td><td><code>lead_actors_ids</code> (רשימת מחרוזות nconst)</td></tr>
+        <tr><td>סרטים ללא שחקנים</td><td>נשמרים עם רשימה ריקה <code>[]</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>JOIN 3 – נתוני Wikipedia (web scraping עם threading)</h3>
+    <p>
+      לכל סרט מנסים עד 3 כתובות URL ב-Wikipedia (לפי שנה → (film) → שם גולמי).
+      הכל מבוצע באמצעות <strong>scraping בלבד (BeautifulSoup)</strong> — ללא שום API.
+      ה-scraping רץ עם <code>ThreadPoolExecutor(max_workers=5)</code> המאפשר 5 סרטים במקביל.
+      מה-infobox נחלצות: <code>Language</code>, <code>Country</code>, <code>budget</code>, <code>BoxOffice</code>.
+      העלילה (<code>plot</code>) נחלצת מקטע Plot/Synopsis, או מפסקת הפתיחה כ-fallback.
+      התוצאות מאוחדות עם הטבלה הראשית באמצעות <code>pd.concat</code> לפי אינדקס.
+    </p>
+  </section>
+
+  <!-- ===== תיאור שדות ===== -->
+  <section>
+    <h2>תיאור שדות סט הנתונים</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>שם עמודה</th>
+          <th>סוג</th>
+          <th>מקור</th>
+          <th>תיאור</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>tconst</code></td>
+          <td>String</td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>מזהה ייחודי של הסרט ב-IMDb (לדוגמה: tt0000502)</td>
+        </tr>
+        <tr>
+          <td><code>primaryTitle</code></td>
+          <td>String</td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>שם הסרט הראשי (כפי שמופיע ב-IMDb)</td>
+        </tr>
+        <tr>
+          <td><code>startYear</code></td>
+          <td>Integer</td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>שנת יציאה לאקרנים (1905–2024)</td>
+        </tr>
+        <tr>
+          <td><code>genres</code></td>
+          <td>List[String]</td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>רשימת ז'אנרים כפי שמופיעה ב-IMDb (לדוגמה: ['Drama', 'Comedy'])</td>
+        </tr>
+        <tr>
+          <td><code>lead_actors_ids</code></td>
+          <td>List[String]</td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>עד 5 מזהי nconst של שחקנים מובילים לפי סדר קרדיט (category=='actor')</td>
+        </tr>
+        <tr>
+          <td><code>runtimeMinutes</code></td>
+          <td>Integer</td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>משך הסרט בדקות (60–300)</td>
+        </tr>
+        <tr>
+          <td><code>averageRating</code></td>
+          <td>Float</td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>ממוצע דירוג IMDb בסקלה 1.0–10.0</td>
+        </tr>
+        <tr>
+          <td><code>Language</code></td>
+          <td>String</td>
+          <td><span class="source-tag src-wiki">Wikipedia</span></td>
+          <td>השפה הראשית של הסרט (חולץ מ-infobox של Wikipedia)</td>
+        </tr>
+        <tr>
+          <td><code>Country</code></td>
+          <td>String</td>
+          <td><span class="source-tag src-wiki">Wikipedia</span></td>
+          <td>מדינת ההפקה הראשית (חולץ מ-infobox של Wikipedia)</td>
+        </tr>
+        <tr>
+          <td><code>numVotes</code></td>
+          <td>Integer</td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>מספר המשתמשים שדירגו את הסרט ב-IMDb</td>
+        </tr>
+        <tr>
+          <td><code>budget</code></td>
+          <td>Float</td>
+          <td><span class="source-tag src-wiki">Wikipedia</span></td>
+          <td>תקציב הפקה במיליוני USD; אם מוצג טווח – מחושב ממוצע</td>
+        </tr>
+        <tr>
+          <td><code>BoxOffice</code></td>
+          <td>Float</td>
+          <td><span class="source-tag src-wiki">Wikipedia</span></td>
+          <td>הכנסות גלובליות במיליוני USD; אם מוצג טווח – מחושב ממוצע</td>
+        </tr>
+        <tr>
+          <td><code>plot</code></td>
+          <td>String</td>
+          <td><span class="source-tag src-wiki">Wikipedia</span></td>
+          <td>תקציר העלילה (הפסקה הראשונה מדף Wikipedia)</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===== ערכים חסרים ===== -->
+  <section>
+    <h2>ערכים חסרים לפי עמודה</h2>
+    <p>
+      סה"כ <strong>6,668 סרטים</strong>. הטבלה מציגה את מספר הערכים החסרים ואחוזם לכל עמודה.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>עמודה</th>
+          <th>מקור</th>
+          <th>ערכים חסרים</th>
+          <th>אחוז חסר</th>
+          <th>ויזואליזציה</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>tconst</code></td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>0</td>
+          <td>0.0%</td>
+          <td>
+            <div class="missing-bar-wrap">
+              <div class="missing-bar-bg"><div class="missing-bar-fill low" style="width:0%"></div></div>
+              <div class="missing-pct">שלם</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>primaryTitle</code></td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>0</td>
+          <td>0.0%</td>
+          <td>
+            <div class="missing-bar-wrap">
+              <div class="missing-bar-bg"><div class="missing-bar-fill low" style="width:0%"></div></div>
+              <div class="missing-pct">שלם</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>startYear</code></td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>0</td>
+          <td>0.0%</td>
+          <td>
+            <div class="missing-bar-wrap">
+              <div class="missing-bar-bg"><div class="missing-bar-fill low" style="width:0%"></div></div>
+              <div class="missing-pct">שלם</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>genres</code></td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>0</td>
+          <td>0.0%</td>
+          <td>
+            <div class="missing-bar-wrap">
+              <div class="missing-bar-bg"><div class="missing-bar-fill low" style="width:0%"></div></div>
+              <div class="missing-pct">שלם</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>lead_actors_ids</code></td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>0</td>
+          <td>0.0%</td>
+          <td>
+            <div class="missing-bar-wrap">
+              <div class="missing-bar-bg"><div class="missing-bar-fill low" style="width:0%"></div></div>
+              <div class="missing-pct">שלם</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>runtimeMinutes</code></td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>0</td>
+          <td>0.0%</td>
+          <td>
+            <div class="missing-bar-wrap">
+              <div class="missing-bar-bg"><div class="missing-bar-fill low" style="width:0%"></div></div>
+              <div class="missing-pct">שלם</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>averageRating</code></td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>1,726</td>
+          <td>25.9%</td>
+          <td>
+            <div class="missing-bar-wrap">
+              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:25.9%"></div></div>
+              <div class="missing-pct">סרטים ישנים רבים אינם מדורגים ב-IMDb</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>numVotes</code></td>
+          <td><span class="source-tag src-imdb">IMDb</span></td>
+          <td>1,726</td>
+          <td>25.9%</td>
+          <td>
+            <div class="missing-bar-wrap">
+              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:25.9%"></div></div>
+              <div class="missing-pct">זהה ל-averageRating (אותן שורות)</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>Language</code></td>
+          <td><span class="source-tag src-wiki">Wikipedia</span></td>
+          <td>5,874</td>
+          <td>88.1%</td>
+          <td>
+            <div class="missing-bar-wrap">
+              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:88.1%"></div></div>
+              <div class="missing-pct">רוב הסרטים ישנים/עצמאיים ואין להם דף Wikipedia</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>Country</code></td>
+          <td><span class="source-tag src-wiki">Wikipedia</span></td>
+          <td>5,874</td>
+          <td>88.1%</td>
+          <td>
+            <div class="missing-bar-wrap">
+              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:88.1%"></div></div>
+              <div class="missing-pct">זהה לסיבת Language</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>budget</code></td>
+          <td><span class="source-tag src-wiki">Wikipedia</span></td>
+          <td>6,508</td>
+          <td>97.6%</td>
+          <td>
+            <div class="missing-bar-wrap">
+              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:97.6%"></div></div>
+              <div class="missing-pct">תקציב מוצג רק בסרטים מסחריים בולטים</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>BoxOffice</code></td>
+          <td><span class="source-tag src-wiki">Wikipedia</span></td>
+          <td>6,475</td>
+          <td>97.1%</td>
+          <td>
+            <div class="missing-bar-wrap">
+              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:97.1%"></div></div>
+              <div class="missing-pct">הכנסות מוצגות רק בסרטים מסחריים בולטים</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>plot</code></td>
+          <td><span class="source-tag src-wiki">Wikipedia</span></td>
+          <td>6,067</td>
+          <td>91.0%</td>
+          <td>
+            <div class="missing-bar-wrap">
+              <div class="missing-bar-bg"><div class="missing-bar-fill" style="width:91%"></div></div>
+              <div class="missing-pct">נחלץ מקטע Plot/Synopsis או פסקת פתיחה בדף Wikipedia</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>הערה על ערכים חסרים מ-Wikipedia</h3>
+    <p>
+      שיעור הערכים החסרים בעמודות Wikipedia (~88–97%) נובע בעיקר מכך שרוב הסרטים בקורפוס (בעיקר ישנים, עצמאיים, או זרים) פשוט אינם מופיעים ב-Wikipedia בכלל. הסרטים שכן נמצאו הם לרוב הפקות מסחריות ידועות.
+    </p>
+    <ul>
+      <li>שדות <code>budget</code> ו-<code>BoxOffice</code> חסרים גם בדפים שנמצאו — לא כל סרט תועד פיננסית</li>
+      <li>שדה <code>plot</code> מחולץ גם מפסקת הפתיחה כ-fallback, מה שמגדיל משמעותית את הכיסוי</li>
+    </ul>
+    <p>
+      הערכים החסרים <strong>אינם מוסרים</strong> מסט הנתונים — נשמרים כ-NaN
+      כדי לאפשר למודל בחלק השני להחליט כיצד להתמודד עמם.
+    </p>
+  </section>
+
+  <!-- ===== שיפורי הסקריפינג ===== -->
+  <section>
+    <h2>שיפורי מנגנון ה-Scraping</h2>
+    <p>
+      בעקבות ניתוח מעמיק של מבנה דפי Wikipedia ובעיות הכיסוי, בוצעו השיפורים הבאים:
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>בעיה שאובחנה</th>
+          <th>תיקון שבוצע</th>
+          <th>השפעה</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Cache שמר כישלונות לצמיתות — 93% מהרשומות היו קפואות כ-None מריצה גרועה</td>
+          <td>מחיקת רשומות all-None בטעינה + אי-שמירת כישלונות חדשים</td>
+          <td>Language: 6% → <strong>11.9%</strong></td>
+        </tr>
+        <tr>
+          <td><code>parse_money</code> לא טיפל ב-en-dash (U+2013) — <code>$5.7–6.5M</code> החזיר ערך שגוי</td>
+          <td>Normalize <code>–</code> → <code>-</code> לפני הפרסור</td>
+          <td>ממוצע טווחים מחושב נכון</td>
+        </tr>
+        <tr>
+          <td>דפי Disambiguation לא זוהו — <code>Boys Don't Cry</code> הכניס דף שגוי</td>
+          <td>זיהוי <code>div#disambigbox</code> ← מעקב לקישור הסרט לפי שנה</td>
+          <td>כיסוי נוסף לסרטים עם שמות כפולים</td>
+        </tr>
+        <tr>
+          <td>Search fallback השתמש בטקסט הקישור (מגיע squished: <code>BruceAlmighty</code>)</td>
+          <td>מעבר ל-href slug להתאמה — אמין יותר</td>
+          <td>חיפוש מוצלח יותר</td>
+        </tr>
+        <tr>
+          <td>קטע Plot: HTML חדש של Wikipedia משתמש ב-<code>div.mw-heading</code> ולא ב-<code>&lt;span id="Plot"&gt;</code></td>
+          <td>בדיקה ראשית של <code>div.mw-heading</code>, fallback לסגנון ישן</td>
+          <td>plot: 1.2% → <strong>9.0%</strong></td>
+        </tr>
+        <tr>
+          <td>Lead section: פסקאות נמצאות ב-<code>div.mw-parser-output</code> ולא ישירות ב-<code>div#mw-content-text</code></td>
+          <td>ירידה לרמה הנכונה לפני איטרציה</td>
+          <td>fallback לפסקת פתיחה עובד</td>
+        </tr>
+        <tr>
+          <td>Sleep על 404 — בזבוז זמן על סרטים שאינם ב-Wikipedia</td>
+          <td>Sleep רק כשנמצאה דף בפועל (<code>did_fetch</code>)</td>
+          <td>ריצה מהירה יותר</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===== מקורות ===== -->
+  <section>
+    <h2>מקורות הנתונים</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>מקור</th>
+          <th>קובץ / כתובת</th>
+          <th>שדות שנאספו</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="source-tag src-imdb">IMDb</span> title.basics</td>
+          <td><code>title.basics.tsv.gz</code></td>
+          <td>tconst, titleType, primaryTitle, startYear, runtimeMinutes, genres</td>
+        </tr>
+        <tr>
+          <td><span class="source-tag src-imdb">IMDb</span> title.ratings</td>
+          <td><code>title.ratings.tsv.gz</code></td>
+          <td>averageRating, numVotes</td>
+        </tr>
+        <tr>
+          <td><span class="source-tag src-imdb">IMDb</span> title.principals</td>
+          <td><code>title.principals.tsv.gz</code></td>
+          <td>lead_actors_ids (nconst של שחקנים)</td>
+        </tr>
+        <tr>
+          <td><span class="source-tag src-wiki">Wikipedia</span> scraping בלבד</td>
+          <td><a href="https://en.wikipedia.org" target="_blank">en.wikipedia.org</a></td>
+          <td>Language, Country, budget, BoxOffice, plot</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+
+<footer>
+  <p>מטלה 1 – קורס כריה וניתוח נתונים מתקדם &nbsp;|&nbsp; נוצר אוטומטית</p>
+</footer>
+
+</body>
+</html>

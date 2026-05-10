@@ -1,0 +1,6 @@
+imdb_data/
+assignment_part1_updated.docx
+.claude/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
