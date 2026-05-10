@@ -1,10 +1,7 @@
 # מטלה 1 – איסוף נתוני סרטים
 
 **קורס:** כריה וניתוח נתונים מתקדם  
-**חלק:** 1 מתוך 3
-
-| | |
-|---|---||
+**חלק:** 1 מתוך 
 
 **קישור למאגר:** [https://github.com/reuvenkazorer27/python_assignment](https://github.com/reuvenkazorer27/python_assignment)
 
