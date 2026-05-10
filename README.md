@@ -4,11 +4,7 @@
 **חלק:** 1 מתוך 3
 
 | | |
-|---|---|
-| **שם** | ראובן קזורר |
-| **ת.ז.** | 328605290 |
-| **שם** | אלון רוזנפלד |
-| **ת.ז.** | 322718560 |
+|---|---||
 
 **קישור למאגר:** [https://github.com/reuvenkazorer27/python_assignment](https://github.com/reuvenkazorer27/python_assignment)
 
