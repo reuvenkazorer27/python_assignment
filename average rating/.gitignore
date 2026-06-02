@@ -3,3 +3,14 @@ dataset.csv
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+
+# Temp development scripts (not part of submission)
+add_*.py
+fix_*.py
+update_*.py
+refresh_*.py
+beautify.py
+finalize_*.py
+full_fix.py
+optimal_features.py
+*.pdf
