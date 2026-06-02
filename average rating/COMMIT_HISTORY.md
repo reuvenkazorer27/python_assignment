@@ -1,4 +1,4 @@
-# 📋 היסטוריית Commits — Branch `master`
+# 📋 היסטוריית Commits — `master` & `reuven`
 
 > **פרויקט**: מטלת סיכום חלק 2 — חיזוי דירוג סרטים ב-IMDb  
 > **סטודנטים**: ראובן קזורר 328605290 · אלון רוזנפלד 322718560  
@@ -6,13 +6,26 @@
 
 ---
 
+## 🌿 מבנה הענפים
+
+| ענף | Commit HEAD | מצב |
+|-----|------------|-----|
+| `master` | `894cfe0` | ✅ עדכני |
+| `reuven` | `894cfe0` | ✅ **זהה ל-master** — כל קומיט ב-master נדחף גם ל-reuven |
+| `Alon` | `9b624c9` | 📌 גרסת הגשה ראשונית (לפני כל השיפורים) |
+| `main` | `089ecf7` | 📌 Merge של חלק 1 + חלק 2 הראשוני |
+
+> **`reuven` ו-`master` זהים לחלוטין**: כל קומיט שנדחף ל-`master` נדחף מיד גם ל-`reuven` (`git push origin master:reuven`). ההיסטוריה הבאה חלה על שניהם.
+
+---
+
 ## סיכום מספרי
 
 | פרמטר | ערך |
 |--------|-----|
-| סה"כ קומיטים | 36 |
+| סה"כ קומיטים | **37** (master = reuven) |
 | תקופה | 10.05.2026 – 02.06.2026 |
-| ענפים | `master` = `reuven` (זהים) |
+| ענפים פעילים | `master` · `reuven` (זהים) |
 
 ---
 
@@ -343,6 +356,13 @@
 
 ---
 
+#### `894cfe0` · 02.06.2026
+**Add COMMIT_HISTORY.md — full master & reuven history documentation**
+- יצירת קובץ זה — תיעוד מלא של 37 הקומיטים
+- נדחף ל-`master` ול-`reuven` בו-זמנית
+
+---
+
 ## 📈 ציר הזמן — התקדמות ה-R²
 
 | גרסה | commit | שינוי מרכזי | RMSE (RF) | R² (RF) |
@@ -374,4 +394,56 @@
 
 ---
 
-*נוצר אוטומטית מ-`git log` · ענף `master` · 36 קומיטים*
+## 🌿 השוואת ענפים מפורטת
+
+### `master` vs `reuven` — זהים לחלוטין
+
+כל קומיט ב-`master` נדחף מיד גם ל-`reuven`:
+```bash
+git push origin master          # → master
+git push origin master:reuven   # → reuven (אותו commit)
+```
+
+| # | Hash | תאריך | הודעה | master | reuven |
+|:-:|------|--------|-------|:------:|:------:|
+| 37 | `894cfe0` | 02.06 | Add COMMIT_HISTORY.md | ✅ | ✅ |
+| 36 | `6d102fc` | 02.06 | Update .gitignore | ✅ | ✅ |
+| 35 | `94b1383` | 02.06 | Remove temp dev scripts | ✅ | ✅ |
+| 34 | `5a00667` | 02.06 | Convert Hebrew to English | ✅ | ✅ |
+| 33 | `ee48908` | 02.06 | Final fixes: PPS + summary v5 | ✅ | ✅ |
+| 32 | `ee071d3` | 02.06 | Fix structure: VIF + section 4 | ✅ | ✅ |
+| 31 | `42fb51d` | 02.06 | Critical fix: FEATURE_COLS | ✅ | ✅ |
+| 30 | `733408b` | 02.06 | Beautiful notebook design | ✅ | ✅ |
+| 29 | `1eed8cd` | 02.06 | Full markdown refresh | ✅ | ✅ |
+| 28 | `6f700d6` | 02.06 | Fix VIF + finalize 15 features | ✅ | ✅ |
+| 27 | `e905140` | 02.06 | Optimal 15-feature set | ✅ | ✅ |
+| 26 | `b247520` | 02.06 | Fix PPS code (4 bugs) | ✅ | ✅ |
+| 25 | `ac0c785` | 02.06 | Fix PPS + new features | ✅ | ✅ |
+| 24 | `72133f5` | 02.06 | Add Gradient Boosting + SHAP | ✅ | ✅ |
+| 23 | `34ed998` | 02.06 | Update summary §13 | ✅ | ✅ |
+| 22 | `0c8226a` | 02.06 | Fix errors + upgrade EN features | ✅ | ✅ |
+| 21 | `61a9797` | 01.06 | Add log_numVotes + numVotes_high | ✅ | ✅ |
+| 20 | `5cde2c6` | 01.06 | Explainable plain features | ✅ | ✅ |
+| 19 | `2579c7b` | 01.06 | Fix structural VIF → log_runtime | ✅ | ✅ |
+| 18 | `c5d341b` | 01.06 | Add PPS analysis (lesson 3) | ✅ | ✅ |
+| 17 | `bdba835` | 31.05 | VIF cleanup v2 | ✅ | ✅ |
+| 16 | `22a1e52` | 31.05 | Remove title_word_count VIF=103 | ✅ | ✅ |
+| 15 | `6714947` | 31.05 | Fix VIF cell syntax error | ✅ | ✅ |
+| 14 | `8365429` | 31.05 | Add theory: MCAR/VIF/CART/OOB | ✅ | ✅ |
+| 13 | `cd3c362` | 31.05 | Fix GitHub preview | ✅ | ✅ |
+| 12 | `c3cebf4` | 31.05 | Add RF progress output | ✅ | ✅ |
+| 11 | `f205b87` | 31.05 | Fix RF crash (n_jobs) | ✅ | ✅ |
+| 10 | `491200d` | 28.05 | Fix RF tuning speed | ✅ | ✅ |
+| 9 | `ab19f90` | 27.05 | Add 4 high-signal features | ✅ | ✅ |
+| 8 | `ba1014a` | 27.05 | Tune models for lower RMSE | ✅ | ✅ |
+| 7 | `f4bc5c8` | 27.05 | Feature engineering v4 | ✅ | ✅ |
+| 6 | `910072c` | 25.05 | Fix 2 bugs + remove names | ✅ | ✅ |
+| 5 | `6ed4d0d` | 25.05 | Fix fairness bar chart | ✅ | ✅ |
+| 4 | `9b624c9` | 25.05 | מטלה 2 הגשה ראשונית | ✅ | ✅ |
+| 3 | `2ef5ffd` | 10.05 | עדכון נתוני כיסוי + CSS | ✅ | ✅ |
+| 2 | `372024d` | 10.05 | עדכון cache ויקיפדיה | ✅ | ✅ |
+| 1 | `4f5f7a5` | 10.05 | מטלה 1 הגשה ראשונית | ✅ | ✅ |
+
+---
+
+*נוצר מ-`git log` · ענפים `master` ו-`reuven` · 37 קומיטים*
