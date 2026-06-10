@@ -6,6 +6,7 @@ __pycache__/
 .ipynb_checkpoints/
 dataset.csv
 *.pdf
+AI_USAGE.md
 
 # Temp development scripts (not part of submission)
 add_*.py
