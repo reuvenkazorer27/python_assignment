@@ -94,21 +94,3 @@ jupyter notebook notebook_part2.ipynb
 ```
 
 הריצו את כל התאים לפי הסדר (**Run All** / **Kernel → Restart & Run All**). בסוף הריצה נשמרים `model.pkl` ו-`actor_quality.pkl`.
-
-### שימוש ב-Inference (לאחר אימון)
-
-```python
-import joblib
-import pandas as pd
-from notebook_part2 import prepare_data, compute_actor_quality_map
-
-# Load actor quality map
-aq = joblib.load('actor_quality.pkl')
-ACTOR_QUALITY_MAP  = aq['actor_quality_map']
-GLOBAL_MEAN_RATING = aq['global_mean_rating']
-
-# Load model and predict
-model = joblib.load('model.pkl')
-X_new = prepare_data(df_new_films)
-predictions = model.predict(X_new)
-```
