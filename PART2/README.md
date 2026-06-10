@@ -27,12 +27,14 @@
 
 ```
 numpy==1.26.4
-pandas==2.2.1
+pandas==2.3.3
 scikit-learn==1.4.2
 matplotlib==3.9.0
 seaborn==0.13.2
 joblib==1.3.2
 statsmodels==0.14.2
+scipy==1.13.0
+ppscore==1.3.1
 ```
 
 התקנה:
