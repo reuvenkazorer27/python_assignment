@@ -48,4 +48,6 @@ pip install -r requirements.txt
 jupyter notebook notebook_part2.ipynb
 ```
 
-> חלק 2 משתמש בקבצי IMDb (`title.principals.tsv.gz`, `name.basics.tsv.gz`) מתוך `PART1/imdb_data/` עבור פיצ'רי צוות (`director_quality`, `lead_star_quality`, `actor_prime`).
+> חלק 2 עושה שימוש חוזר בשני קבצי IMDb שכבר הורדו בחלק 1, לצורך פיצ'רי הצוות (`director_quality`, `lead_star_quality`, `actor_prime`):
+> - **טבלת הצוות** (קרדיטים) — לכל סרט: מי הבמאי ומי השחקן הראשי.
+> - **טבלת פרטי האנשים** (כולל שנת לידה) — לחישוב קרבת השחקנים לגיל שיא הקריירה.

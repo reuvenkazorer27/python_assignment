@@ -86,7 +86,9 @@ pip install -r requirements.txt
 ## הוראות הרצה
 
 1. ודאו ש-`dataset.csv` (~70MB, לא כלול ב-repo) נמצא באותה תיקייה כמו הנוטבוק — ניתן להפיק אותו מחדש מ-`PART1/notebook.ipynb`.
-2. עבור פיצ'רי הצוות (`director_quality`, `lead_star_quality`, `actor_prime`) נדרשים גם קבצי IMDb (`title.principals.tsv.gz`, `name.basics.tsv.gz`) בתיקיית `../PART1/imdb_data/`.
+2. עבור פיצ'רי הצוות (`director_quality`, `lead_star_quality`, `actor_prime`) נדרשים גם שני קבצי IMDb נוספים שכבר הורדו בחלק 1:
+   - **`title.principals.tsv.gz`** — טבלת הצוות של כל סרט (תפקיד וסדר קרדיט). ממנה מזהים את **הבמאי** (`category == 'director'`) ואת **השחקן הראשי** (`ordering == 1`) של כל סרט.
+   - **`name.basics.tsv.gz`** — טבלת פרטי אנשים, כולל שנת לידה. משמשת לחישוב `actor_prime` (קרבת השחקנים לגיל שיא הקריירה).
 3. התקינו את הדרישות (ראו לעיל) והריצו:
 
 ```bash
