@@ -17,7 +17,7 @@
 | קובץ | תיאור |
 |------|--------|
 | `notebook_part2.ipynb` | קוד מלא — prepare_data, Feature Engineering, VIF, Elastic Net, Random Forest, Error Analysis, Fairness Analysis |
-| `model.pkl` | המודל המאומן הטוב ביותר (Elastic Net) מאומן על כלל הנתונים |
+| `model.pkl.zip` | המודל המאומן הטוב ביותר (Elastic Net או Random Forest, לפי השוואת הביצועים) מאומן על כלל הנתונים — קובץ דחוס; יש לחלץ ל-`model.pkl` לפני שימוש |
 | `actor_quality.pkl` | מפת איכות שחקנים (LOO Bayesian encoding) — נדרש בזמן inference |
 | `requirements.txt` | רשימת דרישות (תלויות) |
 
@@ -58,3 +58,5 @@ jupyter notebook notebook_part2.ipynb
 ```
 
 הריצו את כל התאים לפי הסדר (**Run All** / **Kernel → Restart & Run All**). בסוף הריצה נשמרים `model.pkl` ו-`actor_quality.pkl`.
+
+> המודל המאומן המצורף ל-repo ארוז כ-`model.pkl.zip` (בגלל מגבלת גודל קובץ ב-GitHub). יש לחלץ אותו (`unzip model.pkl.zip` או חילוץ ידני) כדי לקבל את `model.pkl` לפני טעינה עם `joblib.load`.
