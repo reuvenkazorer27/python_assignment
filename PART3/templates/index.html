@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חיזוי דירוג סרטים - PART 3</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body {
+            background: #f4f6f8;
+            margin: 0;
+            padding: 30px 15px;
+            display: flex;
+            justify-content: center;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 28px 32px;
+            max-width: 640px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 22px;
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        p.subtitle {
+            color: #666;
+            margin-top: -8px;
+            font-size: 14px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-top: 16px;
+            margin-bottom: 4px;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+        input[type=text], input[type=number] {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .hint {
+            color: #888;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        .genres-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px 12px;
+            margin-top: 6px;
+        }
+        .genres-grid label {
+            font-weight: 400;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        button#predict-btn {
+            margin-top: 24px;
+            width: 100%;
+            padding: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            color: #fff;
+            background: #2980b9;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        button#predict-btn:hover { background: #1f618d; }
+        button#predict-btn:disabled { background: #95a5a6; cursor: wait; }
+
+        #result {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            display: none;
+        }
+        #result.success {
+            display: block;
+            background: #eafaf1;
+            color: #1e8449;
+            border: 1px solid #a9dfbf;
+        }
+        #result.error {
+            display: block;
+            background: #fdedec;
+            color: #c0392b;
+            border: 1px solid #f5b7b1;
+            font-size: 15px;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>🎬 חיזוי דירוג סרט (averageRating)</h1>
+    <p class="subtitle">הזינו פרטי סרט וקבלו תחזית דירוג IMDb ממודל Random Forest שאומן בחלק 2.</p>
+
+    <form id="predict-form">
+        <label for="primaryTitle">שם הסרט (Movie Title)</label>
+        <input type="text" id="primaryTitle" name="primaryTitle" placeholder="לדוגמה: The Dark Knight Rises" required>
+        <div class="hint">משמש לזיהוי סרט המשך (is_sequel)</div>
+
+        <label>ז'אנרים (Genres) - יש לבחור לפחות אחד</label>
+        <div class="genres-grid">
+            <label><input type="checkbox" name="genres" value="Drama"> דרמה (Drama)</label>
+            <label><input type="checkbox" name="genres" value="Action"> אקשן (Action)</label>
+            <label><input type="checkbox" name="genres" value="Comedy"> קומדיה (Comedy)</label>
+            <label><input type="checkbox" name="genres" value="Thriller"> מתח (Thriller)</label>
+            <label><input type="checkbox" name="genres" value="Horror"> אימה (Horror)</label>
+            <label><input type="checkbox" name="genres" value="Documentary"> תיעודי (Documentary)</label>
+            <label><input type="checkbox" name="genres" value="Biography"> ביוגרפי (Biography)</label>
+            <label><input type="checkbox" name="genres" value="History"> היסטוריה (History)</label>
+            <label><input type="checkbox" name="genres" value="War"> מלחמה (War)</label>
+            <label><input type="checkbox" name="genres" value="Music"> מוזיקה (Music)</label>
+            <label><input type="checkbox" name="genres" value="Sci-Fi"> מד"ב (Sci-Fi)</label>
+        </div>
+        <div class="hint">משפיע על: genre_Documentary/Horror/Thriller/Biography/Drama/Action, prestige_count, negative_count, genre_momentum (לפי הז'אנר הראשון שנבחר)</div>
+
+        <label for="runtimeMinutes">אורך הסרט בדקות (Runtime Minutes)</label>
+        <input type="number" id="runtimeMinutes" name="runtimeMinutes" placeholder="לדוגמה: 148" min="1" step="1" required>
+        <div class="hint">משמש לחישוב log_runtime ו-is_long_film (מעל 120 דקות)</div>
+
+        <label for="startYear">שנת יציאה (Start Year)</label>
+        <input type="number" id="startYear" name="startYear" placeholder="לדוגמה: 2024" min="1888" max="2100" step="1" required>
+        <div class="hint">משמש לחישוב genre_momentum ו-actor_prime</div>
+
+        <label for="Country">מדינת הפקה (Country)</label>
+        <input type="text" id="Country" name="Country" placeholder="לדוגמה: United States" required>
+        <div class="hint">מסווג ל-country_group: US / East_Asia (יפן, קוריאה, הונג קונג, סין, טייוואן) / Other</div>
+
+        <label for="lead_actors_ids">שחקנים מובילים - מזהי IMDb (lead_actors_ids, אופציונלי)</label>
+        <input type="text" id="lead_actors_ids" name="lead_actors_ids" placeholder="לדוגמה: nm0000138, nm0000093">
+        <div class="hint">
+            רשימת מזהי nconst (מ-IMDb), מופרדים בפסיקים. ניתן למצוא בכתובת ה-URL של עמוד השחקן ב-IMDb (לדוגמה imdb.com/name/<b>nm0000138</b>).
+            משפיע על: actor_quality, actor_quality_spread, has_actors, lead_star_quality
+        </div>
+
+        <button type="submit" id="predict-btn">Predict Rating</button>
+    </form>
+
+    <div id="result"></div>
+</div>
+
+<script>
+const form = document.getElementById('predict-form');
+const resultDiv = document.getElementById('result');
+const btn = document.getElementById('predict-btn');
+
+form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const genres = Array.from(document.querySelectorAll('input[name="genres"]:checked'))
+                         .map(el => el.value);
+
+    const payload = {
+        primaryTitle: document.getElementById('primaryTitle').value,
+        genres: genres,
+        runtimeMinutes: document.getElementById('runtimeMinutes').value,
+        startYear: document.getElementById('startYear').value,
+        Country: document.getElementById('Country').value,
+        lead_actors_ids: document.getElementById('lead_actors_ids').value
+    };
+
+    btn.disabled = true;
+    btn.textContent = 'מחשב תחזית...';
+    resultDiv.className = '';
+    resultDiv.style.display = 'none';
+
+    try {
+        const response = await fetch('/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            resultDiv.className = 'error';
+            resultDiv.textContent = '⚠️ ' + (data.error || 'אירעה שגיאה לא צפויה.');
+        } else {
+            resultDiv.className = 'success';
+            resultDiv.textContent = `Predicted Rating: ${data.predicted_rating} / 10`;
+        }
+    } catch (err) {
+        resultDiv.className = 'error';
+        resultDiv.textContent = '⚠️ לא ניתן להתחבר לשרת. נסו שוב.';
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Predict Rating';
+    }
+});
+</script>
+</body>
+</html>
