@@ -68,16 +68,20 @@ http://localhost:5000
 | **Movie Title** (`primaryTitle`) | שם הסרט | טקסט חופשי, לדוגמה `The Dark Knight Rises` | `is_sequel` |
 | **Genres** (`genres`) | ז'אנרים - יש לבחור לפחות אחד | רשימת תיבות סימון מתוך: Drama, Action, Comedy, Thriller, Horror, Documentary, Biography, History, War, Music, Sci-Fi | `genre_Documentary/Horror/Thriller/Biography/Drama/Action`, `prestige_count`, `negative_count`, `genre_momentum` |
 | **Runtime Minutes** (`runtimeMinutes`) | אורך הסרט בדקות | מספר חיובי, לדוגמה `148` | `log_runtime`, `is_long_film` |
-| **Start Year** (`startYear`) | שנת יציאה | מספר שלם בין 1888 ל-2100, לדוגמה `2024` | `genre_momentum`, `actor_prime` |
+| **Start Year** (`startYear`) | שנת יציאה | מספר שלם בין 1888 ל-2100, לדוגמה `2024` | `genre_momentum` (לפי הז'אנר הראשון שנבחר) |
 | **Country** (`Country`) | מדינת הפקה | טקסט חופשי, לדוגמה `United States` | `country_group` (US / East_Asia / Other) |
-| **Lead Actors IDs** (`lead_actors_ids`) | מזהי IMDb (`nconst`) של עד 5 שחקנים מובילים, מופרדים בפסיקים - אופציונלי | לדוגמה `nm0000138, nm0000093` | `actor_quality`, `actor_quality_spread`, `has_actors`, `lead_star_quality` |
+| **Lead Actors IDs** (`lead_actors_ids`) | מזהי IMDb (`nconst`) של עד 5 שחקנים מובילים, מופרדים בפסיקים - אופציונלי | לדוגמה `nm0000138, nm0000093` | `actor_quality`, `actor_quality_spread`, `has_actors` |
 
 > את מזהי ה-`nconst` ניתן למצוא בכתובת ה-URL של עמוד השחקן ב-IMDb, לדוגמה: `imdb.com/name/nm0000138`.
 
-> הפיצ'רים `director_quality` ו-`lead_star_quality` בחלק 2 חושבו ממפות שנבנו מקובצי IMDb כבדים
-> (`title.principals.tsv.gz`, `name.basics.tsv.gz`). לצורך הפעלת השירות לא נטענו קבצים אלה,
-> ולכן הערכים ל-`director_quality` (ול-`lead_star_quality` כשהשחקן הראשון אינו מוכר) מתבססים על
-> ממוצע הדירוג הכללי (`GLOBAL_MEAN_RATING`) - שאר הפיצ'רים מחושבים מהדאטאסט המלא של חלק 1-2.
+> הפיצ'רים `director_quality`, `lead_star_quality` ו-`actor_prime` בחלק 2 חושבו ממפות שנבנו מקובצי
+> IMDb כבדים (`title.principals.tsv.gz`, `name.basics.tsv.gz` - במאי הסרט, השחקן הראשי לפי
+> סדר קרדיט, ושנות לידה של שחקנים). לצורך הפעלת השירות לא נטענו קבצים אלה, ולכן שלושת הפיצ'רים
+> האלה מקבלים ערך קבוע לכל סרט: `director_quality` ו-`lead_star_quality` מקבלים את ממוצע הדירוג
+> הכללי (`GLOBAL_MEAN_RATING` ≈ 6.07), ו-`actor_prime` מקבל `0.0`. שאר 16 הפיצ'רים (`actor_quality`,
+> `actor_quality_spread`, `has_actors`, `genre_momentum`, `prestige_count`, `negative_count`,
+> `log_runtime`, `is_long_film`, `is_sequel`, `country_group` וכל עמודות `genre_*`) מחושבים
+> דינמית מתוך שדות הטופס ומהמפות (`feature_maps.pkl`) שחושבו מהדאטאסט המלא של חלק 1-2.
 
 ---
 

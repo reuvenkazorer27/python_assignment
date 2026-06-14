@@ -139,7 +139,7 @@
 
         <label for="startYear">שנת יציאה (Start Year)</label>
         <input type="number" id="startYear" name="startYear" placeholder="לדוגמה: 2024" min="1888" max="2100" step="1" required>
-        <div class="hint">משמש לחישוב genre_momentum ו-actor_prime</div>
+        <div class="hint">משמש לחישוב genre_momentum (לפי הז'אנר הראשון שנבחר)</div>
 
         <label for="Country">מדינת הפקה (Country)</label>
         <input type="text" id="Country" name="Country" placeholder="לדוגמה: United States" required>
@@ -149,7 +149,7 @@
         <input type="text" id="lead_actors_ids" name="lead_actors_ids" placeholder="לדוגמה: nm0000138, nm0000093">
         <div class="hint">
             רשימת מזהי nconst (מ-IMDb), מופרדים בפסיקים. ניתן למצוא בכתובת ה-URL של עמוד השחקן ב-IMDb (לדוגמה imdb.com/name/<b>nm0000138</b>).
-            משפיע על: actor_quality, actor_quality_spread, has_actors, lead_star_quality
+            משפיע על: actor_quality, actor_quality_spread, has_actors
         </div>
 
         <button type="submit" id="predict-btn">Predict Rating</button>
