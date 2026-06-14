@@ -13,7 +13,7 @@
 
 ## מבנה המאגר
 
-הפרויקט מחולק לשני חלקים, כל אחד בתיקייה נפרדת:
+הפרויקט מחולק לשלושה חלקים, כל אחד בתיקייה נפרדת:
 
 ### 📁 [`PART1/`](PART1/) — חלק 1: איסוף נתונים
 
@@ -31,6 +31,14 @@
 
 ראו [`PART2/README.md`](PART2/README.md) לפירוט מלא של הפיצ'רים, המתודולוגיה והתוצאות.
 
+### 📁 [`PART3/`](PART3/) — חלק 3: אפליקציית Flask לחיזוי דירוג
+
+עטיפת מודל החיזוי מחלק 2 בשירות web (Flask): דף HTML עם טופס קלט וכפתור Predict, ושרת שמריץ את `prepare_data()` ואת המודל ומחזיר את התחזית בזמן אמת (ללא רענון דף, באמצעות `fetch`).
+
+**קבצים עיקריים:** `api.py`, `templates/index.html`, `assets_data_prep.py`, `trained_model.pkl.zip`, `feature_maps.pkl`, `requirements.txt`
+
+ראו [`PART3/README.md`](PART3/README.md) להוראות התקנה והפעלה.
+
 ---
 
 ## הרצה
@@ -46,6 +54,11 @@ jupyter notebook notebook.ipynb
 cd PART2
 pip install -r requirements.txt
 jupyter notebook notebook_part2.ipynb
+
+# חלק 3
+cd PART3
+pip install -r requirements.txt
+python api.py   # http://localhost:5000
 ```
 
 > חלק 2 עושה שימוש חוזר בשני קבצי IMDb שכבר הורדו בחלק 1, לצורך פיצ'רי הצוות (`director_quality`, `lead_star_quality`, `actor_prime`):
