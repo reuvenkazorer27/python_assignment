@@ -4,7 +4,10 @@ api.py - שרת Flask לחיזוי דירוג סרטים (PART 3)
 נקודות קצה:
     GET  /         - מחזיר את דף index.html (טופס הקלט)
     POST /predict  - מקבל JSON עם נתוני סרט, מריץ prepare_data() ואז
-                      model.predict(), ומחזיר JSON: {"predicted_rating": <ערך>}
+                      model.predict(), ומחזיר JSON:
+                      {"predicted_rating": <ערך>, "features": {...19 הפיצ'רים...}}
+                      (predicted_rating הוא השדה הנדרש במטלה; features הוא תוספת
+                      שקיפות אופציונלית - 19 ערכי הפיצ'רים שהוזנו ל-model.predict())
 """
 
 import os
