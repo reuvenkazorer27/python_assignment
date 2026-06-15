@@ -121,6 +121,13 @@ def predict():
                 'error': f'מזהה שחקן לא תקין: "{a}" - מזהה IMDb חייב להתחיל ב-"nm" (לדוגמה nm0000138)'
             }), 400
 
+    # director_id - שדה אופציונלי: מזהה IMDb (nconst) של הבמאי
+    director_id = str(data.get('directorId', '') or '').strip()
+    if director_id and not director_id.startswith('nm'):
+        return jsonify({
+            'error': f'מזהה במאי לא תקין: "{director_id}" - מזהה IMDb חייב להתחיל ב-"nm" (לדוגמה nm0000233)'
+        }), 400
+
     # ── 3+4. בניית DataFrame, prepare_data ו-model.predict ───────────────────
     try:
         row = {
@@ -134,6 +141,12 @@ def predict():
             'lead_actors_ids': str(actor_ids),
         }
         df = pd.DataFrame([row])
+
+        # הזרקת מזהה הבמאי ל-TCONST_TO_DIRECTOR (ללא שינוי בלוגיקת prepare_data):
+        # director_quality = DIRECTOR_MAP.get(director_id, GLOBAL_MEAN_RATING)
+        dp.TCONST_TO_DIRECTOR.pop('tt_new_film', None)
+        if director_id:
+            dp.TCONST_TO_DIRECTOR['tt_new_film'] = director_id
 
         X = dp.prepare_data(df)
         prediction = model.predict(X)[0]

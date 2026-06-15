@@ -70,18 +70,30 @@ http://localhost:5000
 | **Runtime Minutes** (`runtimeMinutes`) | אורך הסרט בדקות | מספר חיובי, לדוגמה `148` | `log_runtime`, `is_long_film` |
 | **Start Year** (`startYear`) | שנת יציאה | מספר שלם בין 1888 ל-2100, לדוגמה `2024` | `genre_momentum` (לפי הז'אנר הראשון שנבחר) |
 | **Country** (`Country`) | מדינת הפקה | טקסט חופשי, לדוגמה `United States` | `country_group` (US / East_Asia / Other) |
-| **Lead Actors IDs** (`lead_actors_ids`) | מזהי IMDb (`nconst`) של עד 5 שחקנים מובילים, מופרדים בפסיקים - אופציונלי | לדוגמה `nm0000138, nm0000093` | `actor_quality`, `actor_quality_spread`, `has_actors` |
+| **Lead Actors IDs** (`lead_actors_ids`) | מזהי IMDb (`nconst`) של עד 5 שחקנים מובילים, מופרדים בפסיקים - אופציונלי | לדוגמה `nm0000138, nm0000093` | `actor_quality`, `actor_quality_spread`, `has_actors`, `actor_prime` |
+| **Director ID** (`directorId`) | מזהה IMDb (`nconst`) של הבמאי - אופציונלי | לדוגמה `nm0000233` | `director_quality` |
 
-> את מזהי ה-`nconst` ניתן למצוא בכתובת ה-URL של עמוד השחקן ב-IMDb, לדוגמה: `imdb.com/name/nm0000138`.
+> את מזהי ה-`nconst` ניתן למצוא בכתובת ה-URL של עמוד השחקן/הבמאי ב-IMDb, לדוגמה: `imdb.com/name/nm0000138`.
 
-> הפיצ'רים `director_quality`, `lead_star_quality` ו-`actor_prime` בחלק 2 חושבו ממפות שנבנו מקובצי
-> IMDb כבדים (`title.principals.tsv.gz`, `name.basics.tsv.gz` - במאי הסרט, השחקן הראשי לפי
-> סדר קרדיט, ושנות לידה של שחקנים). לצורך הפעלת השירות לא נטענו קבצים אלה, ולכן שלושת הפיצ'רים
-> האלה מקבלים ערך קבוע לכל סרט: `director_quality` ו-`lead_star_quality` מקבלים את ממוצע הדירוג
-> הכללי (`GLOBAL_MEAN_RATING` ≈ 6.07), ו-`actor_prime` מקבל `0.0`. שאר 16 הפיצ'רים (`actor_quality`,
-> `actor_quality_spread`, `has_actors`, `genre_momentum`, `prestige_count`, `negative_count`,
-> `log_runtime`, `is_long_film`, `is_sequel`, `country_group` וכל עמודות `genre_*`) מחושבים
-> דינמית מתוך שדות הטופס ומהמפות (`feature_maps.pkl`) שחושבו מהדאטאסט המלא של חלק 1-2.
+> **`actor_prime`** מחושב דינמית מ-`lead_actors_ids` + `startYear`: עבור כל שחקן מוביל שמזהה ה-`nconst`
+> שלו מופיע ב-`NCONST_BIRTH_YEAR` (מילון שנת-לידה שנבנה אופליין מ-`name.basics.tsv.gz`, ~83K שחקנים -
+> כ-39% מהשחקנים שמופיעים בדאטאסט), הפיצ'ר מחשב כמה השחקן קרוב ל"גיל שיא" (42) בשנת `startYear`.
+> לדוגמה `nm0000138` (Leonardo DiCaprio, נולד 1974) עם `startYear=2010` -> `actor_prime = -6.0`.
+> אם אף אחד מהשחקנים שהוזנו לא נמצא במילון (או שהשדה ריק), `actor_prime = 0.0`.
+
+> **`director_quality`** מחושב דינמית מ-`directorId`: עבור במאי שמזהה ה-`nconst` שלו מופיע ב-`DIRECTOR_MAP`
+> (מילון שנבנה אופליין מ-`title.principals.tsv.gz`, ~56K במאים על סמך הדאטאסט המלא), הפיצ'ר מקבל את
+> ציון האיכות הממוצע (מוחלק, smoothing=5.0) של הסרטים שביים. לדוגמה `nm0000233` (Christopher Nolan)
+> -> `director_quality ≈ 6.95` (לעומת ברירת המחדל `GLOBAL_MEAN_RATING ≈ 6.07`). אם השדה ריק או שהבמאי
+> לא נמצא במילון, `director_quality = GLOBAL_MEAN_RATING`.
+
+> **`lead_star_quality`** נשאר קבוע (`GLOBAL_MEAN_RATING` ≈ 6.07) לכל סרט - בחלק 2 הוא חושב ממפה
+> (`LEAD_STAR_MAP`) שדורשת לדעת מי השחקן הראשי לפי סדר קרדיט (ordering=1) בכל סרט, ובטופס אין שדה
+> נפרד לכך (בשונה מ-`directorId`, שדה כזה היה דורש להפריד "שחקן ראשי" משאר `lead_actors_ids`).
+> שאר 17 הפיצ'רים (`actor_quality`, `actor_quality_spread`, `has_actors`, `actor_prime`,
+> `director_quality`, `genre_momentum`, `prestige_count`, `negative_count`, `log_runtime`,
+> `is_long_film`, `is_sequel`, `country_group` וכל עמודות `genre_*`) מחושבים דינמית מתוך שדות הטופס
+> ומהמפות (`feature_maps.pkl`) שחושבו מהדאטאסט המלא של חלק 1-2.
 
 ---
 
@@ -91,17 +103,17 @@ http://localhost:5000
 
 ```json
 {
-  "predicted_rating": 6.4,
+  "predicted_rating": 7.3,
   "features": {
-    "actor_quality": 6.07,
+    "actor_quality": 7.1225,
     "prestige_count": 0.0,
     "negative_count": 1.0,
-    "log_runtime": 5.0,
+    "log_runtime": 5.0039,
     "actor_quality_spread": 0.0,
-    "genre_momentum": 6.21,
-    "director_quality": 6.07,
-    "lead_star_quality": 6.07,
-    "actor_prime": 0.0,
+    "genre_momentum": 6.2073,
+    "director_quality": 6.9543,
+    "lead_star_quality": 6.0702,
+    "actor_prime": -6.0,
     "genre_Documentary": 0.0,
     "genre_Horror": 0.0,
     "genre_Thriller": 0.0,
@@ -110,11 +122,15 @@ http://localhost:5000
     "genre_Action": 1.0,
     "is_long_film": 1.0,
     "is_sequel": 0.0,
-    "has_actors": 0.0,
+    "has_actors": 1.0,
     "country_group": "US"
   }
 }
 ```
+
+> דוגמה זו עבור `lead_actors_ids="nm0000138"` (Leonardo DiCaprio) ו-`directorId="nm0000233"`
+> (Christopher Nolan), `startYear=2010`, ז'אנרים `Drama, Action`, `runtimeMinutes=148`,
+> `Country="United States"` (סרט מסוג Inception).
 
 `predicted_rating` הוא החיזוי הראשי (כנדרש במטלה). השדה `features` הוא תוספת שקיפות -
 מציג את **19 הפיצ'רים** המדויקים שחושבו ע"י `prepare_data()` והוזנו ל-`model.predict()`

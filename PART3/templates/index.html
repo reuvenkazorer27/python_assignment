@@ -427,7 +427,14 @@
         <input type="text" id="lead_actors_ids" name="lead_actors_ids" placeholder="לדוגמה: nm0000138, nm0000093">
         <div class="hint">
             רשימת מזהי <code>nconst</code> (מ-IMDb), מופרדים בפסיקים. ניתן למצוא בכתובת ה-URL של עמוד השחקן ב-IMDb (לדוגמה <code>imdb.com/name/nm0000138</code>).<br>
-            משפיע על: <code>actor_quality</code>, <code>actor_quality_spread</code>, <code>has_actors</code>
+            משפיע על: <code>actor_quality</code>, <code>actor_quality_spread</code>, <code>has_actors</code>, <code>actor_prime</code> (לפי שנת לידת השחקן ושנת היציאה)
+        </div>
+
+        <label for="directorId">🎬 מזהה במאי - IMDb <span style="font-weight:400; color: var(--muted); font-size: 12px;">(אופציונלי)</span></label>
+        <input type="text" id="directorId" name="directorId" placeholder="לדוגמה: nm0000233">
+        <div class="hint">
+            מזהה <code>nconst</code> של הבמאי (מ-IMDb). ניתן למצוא בכתובת ה-URL של עמוד הבמאי ב-IMDb (לדוגמה <code>imdb.com/name/nm0000233</code>).<br>
+            משפיע על: <code>director_quality</code>
         </div>
 
         <button type="submit" id="predict-btn">
@@ -542,7 +549,8 @@ form.addEventListener('submit', async function (e) {
         runtimeMinutes: document.getElementById('runtimeMinutes').value,
         startYear: document.getElementById('startYear').value,
         Country: document.getElementById('Country').value,
-        lead_actors_ids: document.getElementById('lead_actors_ids').value
+        lead_actors_ids: document.getElementById('lead_actors_ids').value,
+        directorId: document.getElementById('directorId').value
     };
 
     btn.disabled = true;
