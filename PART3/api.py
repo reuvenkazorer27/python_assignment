@@ -138,10 +138,14 @@ def predict():
         # הדירוג מוגבל לטווח 1-10 (IMDb averageRating)
         predicted_rating = max(1.0, min(10.0, predicted_rating))
 
+        # 19 הפיצ'רים שחושבו ע"י prepare_data() והוזנו ל-model.predict() (לתצוגה בלבד)
+        features = {col: round(float(val), 4) for col, val in X.iloc[0].items() if col != 'country_group'}
+        features['country_group'] = str(X.iloc[0]['country_group'])
+
     except Exception as e:
         return jsonify({'error': f'שגיאה פנימית בעת חישוב התחזית: {e}'}), 500
 
-    return jsonify({'predicted_rating': predicted_rating})
+    return jsonify({'predicted_rating': predicted_rating, 'features': features})
 
 
 if __name__ == '__main__':

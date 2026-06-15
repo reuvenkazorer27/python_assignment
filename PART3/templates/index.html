@@ -254,7 +254,7 @@
 
         #result.show {
             margin-top: 22px;
-            max-height: 320px;
+            max-height: 900px;
             opacity: 1;
             padding: 20px;
             border: 1.5px solid transparent;
@@ -291,6 +291,58 @@
             width: 0%;
             transition: width .6s ease;
             background: linear-gradient(90deg, #e74c3c, #f39c12, #27ae60);
+        }
+
+        .features-details {
+            margin-top: 16px;
+            text-align: right;
+        }
+
+        .features-details summary {
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            opacity: .85;
+            list-style: none;
+            user-select: none;
+            padding: 6px 0;
+        }
+
+        .features-details summary::-webkit-details-marker { display: none; }
+
+        .features-details summary::before {
+            content: '▸ ';
+            display: inline-block;
+            transition: transform .2s ease;
+        }
+
+        .features-details[open] summary::before {
+            content: '▾ ';
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 6px 14px;
+            margin-top: 10px;
+            padding: 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,.5);
+            font-size: 13px;
+            max-height: 260px;
+            overflow-y: auto;
+        }
+
+        .feat-name {
+            font-weight: 500;
+            opacity: .8;
+        }
+
+        .feat-value {
+            font-weight: 700;
+            text-align: left;
+            direction: ltr;
+            font-family: 'Courier New', monospace;
         }
 
         footer {
@@ -401,18 +453,71 @@ function ratingColor(v) {
     return '#e74c3c';
 }
 
-function showSuccess(rating) {
+// 19 הפיצ'רים שמחזירה prepare_data() ומוזנים ל-model.predict() - שמות תצוגה בעברית
+const FEATURE_LABELS = {
+    actor_quality:        'איכות שחקנים (actor_quality)',
+    prestige_count:       "מס' ז'אנרי פרסטיג' (prestige_count)",
+    negative_count:       "מס' ז'אנרים שליליים (negative_count)",
+    log_runtime:          'לוג אורך הסרט (log_runtime)',
+    actor_quality_spread: 'פיזור איכות שחקנים (actor_quality_spread)',
+    genre_momentum:       "מומנטום ז'אנר (genre_momentum)",
+    director_quality:     'איכות בימוי (director_quality)',
+    lead_star_quality:    'איכות כוכב ראשי (lead_star_quality)',
+    actor_prime:          'קרבה לגיל שיא (actor_prime)',
+    genre_Documentary:    "ז'אנר: תיעודי",
+    genre_Horror:         "ז'אנר: אימה",
+    genre_Thriller:       "ז'אנר: מתח",
+    genre_Biography:      "ז'אנר: ביוגרפי",
+    genre_Drama:          "ז'אנר: דרמה",
+    genre_Action:         "ז'אנר: אקשן",
+    is_long_film:         'סרט ארוך - מעל 120 דק׳ (is_long_film)',
+    is_sequel:            'סרט המשך (is_sequel)',
+    has_actors:           'שחקנים מוכרים בדאטאסט (has_actors)',
+    country_group:        'קבוצת מדינה (country_group)',
+};
+const BINARY_FEATURES = new Set([
+    'genre_Documentary', 'genre_Horror', 'genre_Thriller', 'genre_Biography',
+    'genre_Drama', 'genre_Action', 'is_long_film', 'is_sequel', 'has_actors',
+]);
+
+function showSuccess(rating, features) {
     resultDiv.innerHTML = `
         <div class="result-icon">🎯</div>
         <div class="result-label">PREDICTED RATING</div>
         <div class="result-value"></div>
         <div class="rating-bar"><div class="rating-fill"></div></div>
+        <details class="features-details">
+            <summary>📊 19 הפיצ'רים שחושבו ע"י prepare_data() והוזנו למודל</summary>
+            <div class="features-grid"></div>
+        </details>
     `;
     resultDiv.querySelector('.result-value').textContent = `${rating} / 10`;
     const fill = resultDiv.querySelector('.rating-fill');
     requestAnimationFrame(() => {
         fill.style.width = Math.max(0, Math.min(100, rating * 10)) + '%';
     });
+
+    const grid = resultDiv.querySelector('.features-grid');
+    if (features) {
+        Object.keys(FEATURE_LABELS).forEach(key => {
+            if (!(key in features)) return;
+            let value = features[key];
+            if (BINARY_FEATURES.has(key)) {
+                value = value ? '✅ כן' : '❌ לא';
+            } else if (typeof value === 'number') {
+                value = value.toFixed(3);
+            }
+            const nameEl = document.createElement('div');
+            nameEl.className = 'feat-name';
+            nameEl.textContent = FEATURE_LABELS[key];
+            const valEl = document.createElement('div');
+            valEl.className = 'feat-value';
+            valEl.textContent = String(value);
+            grid.appendChild(nameEl);
+            grid.appendChild(valEl);
+        });
+    }
+
     resultDiv.className = 'show success';
 }
 
@@ -458,7 +563,7 @@ form.addEventListener('submit', async function (e) {
         if (!response.ok) {
             showError(data.error || 'אירעה שגיאה לא צפויה.');
         } else {
-            showSuccess(data.predicted_rating);
+            showSuccess(data.predicted_rating, data.features);
         }
     } catch (err) {
         showError('לא ניתן להתחבר לשרת. נסו שוב.');

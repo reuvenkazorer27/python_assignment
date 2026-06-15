@@ -85,7 +85,45 @@ http://localhost:5000
 
 ---
 
-## 6. שמות חברי הצוות
+## 6. תשובת ה-API ושקיפות הפיצ'רים
+
+נקודת הקצה `POST /predict` מחזירה JSON בפורמט:
+
+```json
+{
+  "predicted_rating": 6.4,
+  "features": {
+    "actor_quality": 6.07,
+    "prestige_count": 0.0,
+    "negative_count": 1.0,
+    "log_runtime": 5.0,
+    "actor_quality_spread": 0.0,
+    "genre_momentum": 6.21,
+    "director_quality": 6.07,
+    "lead_star_quality": 6.07,
+    "actor_prime": 0.0,
+    "genre_Documentary": 0.0,
+    "genre_Horror": 0.0,
+    "genre_Thriller": 0.0,
+    "genre_Biography": 0.0,
+    "genre_Drama": 1.0,
+    "genre_Action": 1.0,
+    "is_long_film": 1.0,
+    "is_sequel": 0.0,
+    "has_actors": 0.0,
+    "country_group": "US"
+  }
+}
+```
+
+`predicted_rating` הוא החיזוי הראשי (כנדרש במטלה). השדה `features` הוא תוספת שקיפות -
+מציג את **19 הפיצ'רים** המדויקים שחושבו ע"י `prepare_data()` והוזנו ל-`model.predict()`
+לקבלת התחזית. בדף הבית, לחיצה על "📊 19 הפיצ'רים שחושבו..." מתחת לתוצאה פותחת אזור
+שמציג את כל הערכים האלה (בעברית, עם ✅/❌ לפיצ'רים בינאריים).
+
+---
+
+## 7. שמות חברי הצוות
 
 - ראובן קזורר
 - אלון רוזנפלד
