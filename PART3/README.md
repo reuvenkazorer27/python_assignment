@@ -71,7 +71,7 @@ http://localhost:5000
 | **Start Year** (`startYear`) | שנת יציאה | מספר שלם בין 1888 ל-2100, לדוגמה `2024` | `genre_momentum` (לפי הז'אנר הראשון שנבחר) |
 | **Country** (`Country`) | מדינת הפקה | טקסט חופשי, לדוגמה `United States` | `country_group` (US / East_Asia / Other) |
 | **Lead Actors IDs** (`lead_actors_ids`) | מזהי IMDb (`nconst`) של עד 5 שחקנים מובילים, מופרדים בפסיקים - אופציונלי | לדוגמה `nm0000138, nm0000093` | `actor_quality`, `actor_quality_spread`, `has_actors`, `actor_prime` |
-| **Director ID** (`directorId`) | מזהה IMDb (`nconst`) של הבמאי - אופציונלי | לדוגמה `nm0000233` | `director_quality` |
+| **Director ID** (`directorId`) | מזהה IMDb (`nconst`) של הבמאי - אופציונלי | לדוגמה `nm0634240` | `director_quality` |
 
 > את מזהי ה-`nconst` ניתן למצוא בכתובת ה-URL של עמוד השחקן/הבמאי ב-IMDb, לדוגמה: `imdb.com/name/nm0000138`.
 
@@ -83,8 +83,8 @@ http://localhost:5000
 
 > **`director_quality`** מחושב דינמית מ-`directorId`: עבור במאי שמזהה ה-`nconst` שלו מופיע ב-`DIRECTOR_MAP`
 > (מילון שנבנה אופליין מ-`title.principals.tsv.gz`, ~56K במאים על סמך הדאטאסט המלא), הפיצ'ר מקבל את
-> ציון האיכות הממוצע (מוחלק, smoothing=5.0) של הסרטים שביים. לדוגמה `nm0000233` (Christopher Nolan)
-> -> `director_quality ≈ 6.95` (לעומת ברירת המחדל `GLOBAL_MEAN_RATING ≈ 6.07`). אם השדה ריק או שהבמאי
+> ציון האיכות הממוצע (מוחלק, smoothing=5.0) של הסרטים שביים. לדוגמה `nm0634240` (Christopher Nolan)
+> -> `director_quality ≈ 7.57` (לעומת ברירת המחדל `GLOBAL_MEAN_RATING ≈ 6.07`). אם השדה ריק או שהבמאי
 > לא נמצא במילון, `director_quality = GLOBAL_MEAN_RATING`.
 
 > **`lead_star_quality`** נשאר קבוע (`GLOBAL_MEAN_RATING` ≈ 6.07) לכל סרט - בחלק 2 הוא חושב ממפה
@@ -103,7 +103,7 @@ http://localhost:5000
 
 ```json
 {
-  "predicted_rating": 7.3,
+  "predicted_rating": 7.4,
   "features": {
     "actor_quality": 7.1225,
     "prestige_count": 0.0,
@@ -111,7 +111,7 @@ http://localhost:5000
     "log_runtime": 5.0039,
     "actor_quality_spread": 0.0,
     "genre_momentum": 6.2073,
-    "director_quality": 6.9543,
+    "director_quality": 7.5719,
     "lead_star_quality": 6.0702,
     "actor_prime": -6.0,
     "genre_Documentary": 0.0,
@@ -128,7 +128,7 @@ http://localhost:5000
 }
 ```
 
-> דוגמה זו עבור `lead_actors_ids="nm0000138"` (Leonardo DiCaprio) ו-`directorId="nm0000233"`
+> דוגמה זו עבור `lead_actors_ids="nm0000138"` (Leonardo DiCaprio) ו-`directorId="nm0634240"`
 > (Christopher Nolan), `startYear=2010`, ז'אנרים `Drama, Action`, `runtimeMinutes=148`,
 > `Country="United States"` (סרט מסוג Inception).
 

@@ -125,7 +125,7 @@ def predict():
     director_id = str(data.get('directorId', '') or '').strip()
     if director_id and not director_id.startswith('nm'):
         return jsonify({
-            'error': f'מזהה במאי לא תקין: "{director_id}" - מזהה IMDb חייב להתחיל ב-"nm" (לדוגמה nm0000233)'
+            'error': f'מזהה במאי לא תקין: "{director_id}" - מזהה IMDb חייב להתחיל ב-"nm" (לדוגמה nm0634240)'
         }), 400
 
     # ── 3+4. בניית DataFrame, prepare_data ו-model.predict ───────────────────
